@@ -78,9 +78,9 @@ namespace DynamoWebServer.Messages
         private void ProcessMessage(Action message)
         {
             Dispatcher dispatcher;
-            if (Application.Current != null)
+            /*if (Application.Current != null)
                 dispatcher = Application.Current.Dispatcher;
-            else
+            else*/
                 dispatcher = Dispatcher.CurrentDispatcher;
             dispatcher.Invoke(message);
         }

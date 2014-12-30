@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 
 using Dynamo.Models;
@@ -29,9 +30,13 @@ namespace DynamoWebServer
 
             webSocketServer.Start();
 
-            var app = new Application();
-            app.Exit += webSocketServer.ProcessExit;
-            app.Run();
+            while (true)
+            {
+                var text = Console.ReadLine();
+                if (text == "exit")
+                    break;
+            }
+            
         }
     }
 }

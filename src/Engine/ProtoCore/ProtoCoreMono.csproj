@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OutputPath Condition=" '$(OutputPath)' == '' ">..\..\bin\$(Platform)\$(Configuration)</OutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">..\..\..\bin\$(Platform)\$(Configuration)</OutputPath>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -53,13 +53,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\..\AssemblyVersionInfo.cs">
-      <Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
+    <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
     <Compile Include="CodeBlock.cs" />
@@ -68,9 +66,9 @@
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
-    <Compile Include="CallsiteExecutionState\CallsiteExecutionState.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />
     <Compile Include="DSASM\DSAsmDefs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
@@ -83,6 +81,7 @@
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
     <Compile Include="Exceptions\ExceptionHandling.cs" />
+    <Compile Include="Exceptions\MethodResolution.cs" />
     <Compile Include="Exceptions\ReplicationException.cs" />
     <Compile Include="FFI\ContextData.cs" />
     <Compile Include="FFI\ContextDataManager.cs" />
@@ -96,6 +95,8 @@
     <Compile Include="Lang\FunctionPointerEvaluator.cs" />
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
+    <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />
     <Compile Include="Reflection\Mirror.cs" />
@@ -136,13 +137,13 @@
     <Compile Include="Lang\FunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringConstants.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\GCUtils.cs" />
-    <Compile Include="Utils\HeapUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\LegacyUtils.cs" />
     <Compile Include="Utils\LexUtils.cs" />
@@ -153,12 +154,16 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ExtendedLibraries\FunctionObject.ds" />
     <None Include="Parser\atg\Associative.atg" />
     <None Include="Parser\atg\End.atg" />
     <None Include="Parser\atg\Imperative.atg" />
@@ -166,11 +171,5 @@
     <None Include="Parser\GenerateParser.bat" />
     <None Include="Parser\Parser.frame" />
     <None Include="Parser\Scanner.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ProtoInterface\ProtoInterfaceMono.csproj">
-      <Project>{9EC0521F-84DA-4196-B0BC-34E4049E50BD}</Project>
-      <Name>ProtoInterfaceMono</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -339,7 +339,11 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
-            if (vtable == null)            {                return null;            }
+            if (vtable == null)
+            {
+                return null;
+            }
+
             ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {

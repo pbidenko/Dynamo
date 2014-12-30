@@ -78,7 +78,7 @@ namespace DynamoWebServer
                 return;
             }
 
-            LogInfo("The server started successfully!");
+            LogInfo("The server started successfully! " + httpBindingAddress + ":" + httpBindingport);
         }
 
         public void SendResponse(Response response, string sessionId)
@@ -120,15 +120,15 @@ namespace DynamoWebServer
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
             // Close connection if not from localhost
-            if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
+            /*if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
             {
                 session.Close();
                 return;
-            }
+            }*/
 
             messageHandler.SessionId = session.SessionID;
 
-            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
+            //ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
             LogInfo("Web socket: connected");
         }
 
@@ -186,7 +186,7 @@ namespace DynamoWebServer
             webSocket.NewDataReceived += socketServer_NewDataReceived;
 
             // FIXME
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
+            //CodeBlockUtils.RequestLogicalToVisualLineIndexMap += Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
         }
 
         void UnBindEvents()
@@ -196,16 +196,16 @@ namespace DynamoWebServer
             webSocket.SessionClosed -= socketServer_SessionClosed;
             webSocket.NewDataReceived -= socketServer_NewDataReceived;
 
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
+            //CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
         }
 
         void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
         {
-            if (enqueue)
+            /*if (enqueue)
             {
                 messageQueue.EnqueueMessage(() => messageHandler.Execute(message, sessionId));
             }
-            else
+            else*/
             {
                 messageHandler.Execute(message, sessionId);
             }
@@ -213,6 +213,7 @@ namespace DynamoWebServer
 
         void LogInfo(string info)
         {
+            Console.WriteLine(info);
             if (dynamoModel.Logger != null)
                 dynamoModel.Logger.Log(info);
         }

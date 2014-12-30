@@ -123,38 +123,45 @@ namespace DynamoUtilities
                 throw new Exception(String.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            AppData = GetDynamoAppDataFolder(MainExecPath);
-
-            Logs = Path.Combine(AppData, "Logs");
-            if (!Directory.Exists(Logs))
+            try
             {
-                Directory.CreateDirectory(Logs);
+                AppData = GetDynamoAppDataFolder(MainExecPath);
+
+                Logs = Path.Combine(AppData, "Logs");
+                if (!Directory.Exists(Logs))
+                {
+                    Directory.CreateDirectory(Logs);
+                }
+
+                UserDefinitions = Path.Combine(AppData, "definitions");
+                if (!Directory.Exists(UserDefinitions))
+                {
+                    Directory.CreateDirectory(UserDefinitions);
+                }
+
+                Packages = Path.Combine(AppData, "packages");
+                if (!Directory.Exists(Packages))
+                {
+                    Directory.CreateDirectory(Packages);
+                }
+
+                var commonData = GetDynamoCommonDataFolder(MainExecPath);
+
+                CommonDefinitions = Path.Combine(commonData, "definitions");
+                if (!Directory.Exists(CommonDefinitions))
+                {
+                    Directory.CreateDirectory(CommonDefinitions);
+                }
+
+                CommonSamples = Path.Combine(commonData, "samples");
+                if (!Directory.Exists(CommonSamples))
+                {
+                    Directory.CreateDirectory(CommonSamples);
+                }
             }
-
-            UserDefinitions = Path.Combine(AppData, "definitions");
-            if (!Directory.Exists(UserDefinitions))
+            catch (Exception e)
             {
-                Directory.CreateDirectory(UserDefinitions);
-            }
-
-            Packages = Path.Combine(AppData, "packages");
-            if (!Directory.Exists(Packages))
-            {
-                Directory.CreateDirectory(Packages);
-            }
-
-            var commonData = GetDynamoCommonDataFolder(MainExecPath);
-
-            CommonDefinitions = Path.Combine(commonData, "definitions");
-            if (!Directory.Exists(CommonDefinitions))
-            {
-                Directory.CreateDirectory(CommonDefinitions);
-            }
-
-            CommonSamples = Path.Combine(commonData, "samples");
-            if (!Directory.Exists(CommonSamples))
-            {
-                Directory.CreateDirectory(CommonSamples);
+                Console.WriteLine(e.Message);
             }
 
             Ui = Path.Combine(MainExecPath , "UI");
@@ -165,7 +172,7 @@ namespace DynamoUtilities
             }
 
             // Only register the core nodes directory
-            Nodes.Add(Path.Combine(MainExecPath, "nodes"));
+            //Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
 #if DEBUG
             var sb = new StringBuilder();
@@ -294,11 +301,11 @@ namespace DynamoUtilities
         public void SetLibGPath(string version)
         {
             LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
-            var splits = LibG.Split('\\');
-            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
+            var splits = LibG.Split(Path.DirectorySeparatorChar);
+            GeometryFactory = splits.Last() + Path.DirectorySeparatorChar + "LibG.ProtoInterface.dll";
             AsmPreloader = Path.Combine(
                 MainExecPath,
-                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
+                splits.Last() + Path.DirectorySeparatorChar + "LibG.AsmPreloader.Managed.dll");
 
             if (!AdditionalResolutionPaths.Contains(LibG))
             {
@@ -363,6 +370,59 @@ namespace DynamoUtilities
                     }
                 }
             }
+            return false;
+        }
+
+        private static bool FindAsmLinux(string version, out string host)
+        {
+            host = null;
+
+            string baseSearchDirectory = ("/Autodesk");
+            DirectoryInfo root = null;
+
+            try
+            {
+                root = new DirectoryInfo(baseSearchDirectory);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            FileInfo[] files;
+            DirectoryInfo[] subDirs;
+
+            try
+            {
+                subDirs = root.GetDirectories();
+            }
+            catch (Exception e)
+            {
+                // TODO: figure out how to print to the console that Sandbox needs higher permissions
+                return false;
+            }
+
+            if (subDirs.Length == 0)
+                return false;
+
+            foreach (var dirInfo in subDirs)
+            {
+                // AutoCAD directories don't seem to contain all the needed ASM DLLs
+                if (!dirInfo.Name.Contains("Revit") && !dirInfo.Name.Contains("Vasari"))
+                    continue;
+
+                files = dirInfo.GetFiles("*.*");
+
+                foreach (FileInfo fi in files)
+                {
+                    if (fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL", version))
+                    {
+                        // we found a match for the ASM dir
+                        host = dirInfo.FullName;
+                        return true;
+                    }
+                }
+            }
 
             return false;
         }
@@ -376,10 +436,21 @@ namespace DynamoUtilities
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
             string hostLocation;
-            if (!FindAsm(version, out hostLocation))
+            if (IsLinux())
             {
-                Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
-                return false;
+                if(FindAsmLinux(version, out hostLocation))
+                {
+                    Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                    return false;
+                }
+            }
+            else
+            {
+                if (FindAsm(version, out hostLocation))
+                {
+                    Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                    return false;
+                }
             }
 
             pathManager.SetLibGPath(version);
@@ -414,6 +485,12 @@ namespace DynamoUtilities
             if (PreloadAsmVersion("220", pathManager)) return true;
             
             return false;
+        }
+
+        private static bool IsLinux()
+        {
+            int p = (int)Environment.OSVersion.Platform;
+            return (p == 4) || (p == 6) || (p == 128);
         }
     }
 }

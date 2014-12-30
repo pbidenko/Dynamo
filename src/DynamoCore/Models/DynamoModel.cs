@@ -399,8 +399,8 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            if (DynamoModel.IsTestMode == false)
-                InstrumentationLogger.Start(this);
+            /*if (DynamoModel.IsTestMode == false)
+                InstrumentationLogger.Start(this);*/
         }
 
         private void InitializeCurrentWorkspace()
