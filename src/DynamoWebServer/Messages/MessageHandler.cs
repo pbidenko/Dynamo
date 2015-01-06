@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 using Dynamo;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoWebServer.Responses;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System.Threading;
-using Dynamo.Core.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -148,7 +149,7 @@ namespace DynamoWebServer.Messages
             if (workspaceToUpdate == null)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(message.WorkspaceName) 
+            if (!string.IsNullOrWhiteSpace(message.WorkspaceName)
                 && !(workspaceToUpdate is HomeWorkspaceModel))
                 workspaceToUpdate.Name = message.WorkspaceName;
 
@@ -187,7 +188,7 @@ namespace DynamoWebServer.Messages
 
             if (cnModel != null)
                 return cnModel.CustomNodeDefinition.FunctionId.ToString();
-            
+
             return "";
         }
 
@@ -320,7 +321,7 @@ namespace DynamoWebServer.Messages
                             var wsGuid = GetCurrentWorkspaceGuid();
                             var nodeGuid = updateCommand.ModelGuidAsString;
                             var data = GetInOutPortsData(cbn);
-                            
+
                             var response = new CodeBlockDataResponse(wsGuid, nodeGuid, data);
                             OnResultReady(this, new ResultReadyEventArgs(response, sessionId));
                         }
@@ -446,6 +447,11 @@ namespace DynamoWebServer.Messages
             {
                 if (node.CachedValue.IsCollection)
                 {
+                    if (node.Name == "Watch")
+                    {
+                        return GenerateWatchData(node.CachedValue.GetElements(), 1);
+                    }
+
                     data = "Array";
                 }
                 else if (node.CachedValue.Data != null)
@@ -463,6 +469,37 @@ namespace DynamoWebServer.Messages
             }
 
             return data;
+        }
+
+        private string GenerateWatchData(List<ProtoCore.Mirror.MirrorData> list, int t)
+        {
+            var tab = new string('\t', t);
+            var format = "{0}[{1}] {2}{3}";
+            var data = new StringBuilder(list.Count == 0 ? "Empty List" : "List: \n");
+            var i = 0;
+
+            foreach (var mirrorData in list)
+            {
+                if (mirrorData.IsCollection)
+                {
+                    data.Append(string.Format(format, tab, i++, GenerateWatchData(mirrorData.GetElements(), ++t), ""));
+                }
+                else if(mirrorData.Data != null)
+                {
+                    double number;
+                    data.Append(double.TryParse(mirrorData.StringData, out number)
+                        ? string.Format(format, tab, i++, number.ToString("F4"), "\n")
+                        : string.Format(format, tab, i++, mirrorData.Data, "\n"));
+                }
+                else
+                {
+                    data.Append(mirrorData.Class == null 
+                        ? string.Format(format, tab, i++, "null", "\n")
+                        : string.Format(format, tab, i++, mirrorData.Class.ClassName, "\n"));
+                }
+            }
+
+            return data.ToString();
         }
 
         private IEnumerable<ExecutedNode> GetExecutedNodes()
@@ -537,7 +574,7 @@ namespace DynamoWebServer.Messages
                     new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
             }
         }
-        
+
         /// <summary>
         /// Cleanup Home workspace and remove all custom nodes
         /// </summary>
