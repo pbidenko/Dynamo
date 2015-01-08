@@ -16,6 +16,8 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoWebServer.Responses;
 
+using ProtoCore.Mirror;
+
 namespace DynamoWebServer.Messages
 {
     public class MessageHandler
@@ -445,13 +447,12 @@ namespace DynamoWebServer.Messages
             string data = "null";
             if (node.CachedValue != null)
             {
-                if (node.CachedValue.IsCollection)
+                if (node.Name == "Watch")
                 {
-                    if (node.Name == "Watch")
-                    {
-                        return GenerateWatchData(node.CachedValue.GetElements(), 1);
-                    }
-
+                    data = GenerateWatchData(node.CachedValue, 1);
+                }
+                else if (node.CachedValue.IsCollection)
+                {
                     data = "Array";
                 }
                 else if (node.CachedValue.Data != null)
@@ -471,35 +472,59 @@ namespace DynamoWebServer.Messages
             return data;
         }
 
-        private string GenerateWatchData(List<ProtoCore.Mirror.MirrorData> list, int t)
+        private string GenerateWatchData(MirrorData data, int t)
         {
             var tab = new string('\t', t);
             var format = "{0}[{1}] {2}{3}";
-            var data = new StringBuilder(list.Count == 0 ? "Empty List" : "List: \n");
-            var i = 0;
+            var result = new StringBuilder();
 
-            foreach (var mirrorData in list)
+            if (data.IsCollection)
             {
-                if (mirrorData.IsCollection)
+                var list = data.GetElements();
+                var i = 0;
+
+                result.Append(list.Count == 0 ? "Empty List" : "List: \n");
+
+                foreach (var mirrorData in list)
                 {
-                    data.Append(string.Format(format, tab, i++, GenerateWatchData(mirrorData.GetElements(), ++t), ""));
+                    if (mirrorData.IsCollection)
+                    {
+                        result.Append(string.Format(format,tab,i++,GenerateWatchData(mirrorData, ++t),""));
+                    }
+                    else if (mirrorData.Data != null)
+                    {
+                        double number;
+                        result.Append(double.TryParse(mirrorData.StringData, out number)
+                                ? string.Format(format, tab, i++, number.ToString("F4"), "\n")
+                                : string.Format(format, tab, i++, mirrorData.Data, "\n"));
+                    }
+                    else
+                    {
+                        result.Append(mirrorData.Class == null
+                                ? string.Format(format, tab, i++, "null", "\n")
+                                : string.Format(format, tab, i++, mirrorData.Class.ClassName, "\n"));
+                    }
                 }
-                else if(mirrorData.Data != null)
+            }
+            else
+            {
+                if (data.Data != null)
                 {
                     double number;
-                    data.Append(double.TryParse(mirrorData.StringData, out number)
-                        ? string.Format(format, tab, i++, number.ToString("F4"), "\n")
-                        : string.Format(format, tab, i++, mirrorData.Data, "\n"));
+                    result.Append(
+                        double.TryParse(data.StringData, out number)
+                            ? number.ToString("F4")
+                            : data.Data);
                 }
                 else
                 {
-                    data.Append(mirrorData.Class == null 
-                        ? string.Format(format, tab, i++, "null", "\n")
-                        : string.Format(format, tab, i++, mirrorData.Class.ClassName, "\n"));
+                    result.Append(data.Class == null
+                            ? "null"
+                            : data.Class.ClassName);
                 }
             }
 
-            return data.ToString();
+            return result.ToString();
         }
 
         private IEnumerable<ExecutedNode> GetExecutedNodes()
