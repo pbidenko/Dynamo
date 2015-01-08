@@ -449,7 +449,7 @@ namespace DynamoWebServer.Messages
             {
                 if (node.Name == "Watch")
                 {
-                    data = GenerateWatchData(node.CachedValue, 1);
+                    data = JsonConvert.SerializeObject(GenerateWatchData(node.CachedValue));
                 }
                 else if (node.CachedValue.IsCollection)
                 {
@@ -472,59 +472,52 @@ namespace DynamoWebServer.Messages
             return data;
         }
 
-        private string GenerateWatchData(MirrorData data, int t)
+        private object GenerateWatchData(MirrorData data)
         {
-            var tab = new string('\t', t);
-            var format = "{0}[{1}] {2}{3}";
-            var result = new StringBuilder();
-
             if (data.IsCollection)
             {
-                var list = data.GetElements();
-                var i = 0;
+                var list = new List<object>();
+                var elements = data.GetElements();
 
-                result.Append(list.Count == 0 ? "Empty List" : "List: \n");
-
-                foreach (var mirrorData in list)
+                foreach (var mirrorData in elements)
                 {
                     if (mirrorData.IsCollection)
                     {
-                        result.Append(string.Format(format,tab,i++,GenerateWatchData(mirrorData, ++t),""));
+                        list.Add(GenerateWatchData(mirrorData));
                     }
                     else if (mirrorData.Data != null)
                     {
                         double number;
-                        result.Append(double.TryParse(mirrorData.StringData, out number)
-                                ? string.Format(format, tab, i++, number.ToString("F4"), "\n")
-                                : string.Format(format, tab, i++, mirrorData.Data, "\n"));
+                        list.Add(double.TryParse(mirrorData.StringData, out number)
+                            ? mirrorData.Data
+                            : mirrorData.Data.ToString());
                     }
                     else
                     {
-                        result.Append(mirrorData.Class == null
-                                ? string.Format(format, tab, i++, "null", "\n")
-                                : string.Format(format, tab, i++, mirrorData.Class.ClassName, "\n"));
+                        list.Add(mirrorData.Class == null
+                            ? "null"
+                            : mirrorData.Class.ClassName);
                     }
                 }
+
+                return list.ToArray();
+            }
+
+            object result;
+            if (data.Data != null)
+            {
+                double number;
+                result = double.TryParse(data.StringData, out number)
+                    ? data.Data
+                    : data.Data.ToString();
             }
             else
             {
-                if (data.Data != null)
-                {
-                    double number;
-                    result.Append(
-                        double.TryParse(data.StringData, out number)
-                            ? number.ToString("F4")
-                            : data.Data);
-                }
-                else
-                {
-                    result.Append(data.Class == null
-                            ? "null"
-                            : data.Class.ClassName);
-                }
+                result = data.Class == null
+                    ? "null"
+                    : data.Class.ClassName;
             }
-
-            return result.ToString();
+            return result;
         }
 
         private IEnumerable<ExecutedNode> GetExecutedNodes()
