@@ -33,6 +33,7 @@ namespace DynamoWebServer.Messages
         private AutoResetEvent nextRunAllowed = new AutoResetEvent(false);
         private bool evaluationTookPlace = false;
         private int maxMsToWait = 20000;
+        private const string NULL_STRING = "null";
 
         public MessageHandler(DynamoModel dynamoModel)
         {
@@ -444,7 +445,7 @@ namespace DynamoWebServer.Messages
 
         private string GetValue(NodeModel node)
         {
-            string data = "null";
+            string data = NULL_STRING;
             if (node.CachedValue != null)
             {
                 if (node.Name == "Watch")
@@ -481,43 +482,33 @@ namespace DynamoWebServer.Messages
 
                 foreach (var mirrorData in elements)
                 {
-                    if (mirrorData.IsCollection)
-                    {
-                        list.Add(GenerateWatchData(mirrorData));
-                    }
-                    else if (mirrorData.Data != null)
-                    {
-                        double number;
-                        list.Add(double.TryParse(mirrorData.StringData, out number)
-                            ? mirrorData.Data
-                            : mirrorData.Data.ToString());
-                    }
-                    else
-                    {
-                        list.Add(mirrorData.Class == null
-                            ? "null"
-                            : mirrorData.Class.ClassName);
-                    }
+                    list.Add( mirrorData.IsCollection
+                            ? GenerateWatchData(mirrorData)
+                            : GetSingleObjectPreview(mirrorData));
                 }
 
                 return list.ToArray();
             }
 
-            object result;
+            return GetSingleObjectPreview(data);
+        }
+
+        private object GetSingleObjectPreview(MirrorData data)
+        {
             if (data.Data != null)
             {
                 double number;
-                result = double.TryParse(data.StringData, out number)
+                return double.TryParse(data.StringData, out number)
                     ? data.Data
                     : data.Data.ToString();
             }
-            else
-            {
-                result = data.Class == null
-                    ? "null"
-                    : data.Class.ClassName;
-            }
-            return result;
+
+            if (data.IsNull)
+                return NULL_STRING;
+
+            return data.Class == null
+                ? NULL_STRING
+                : data.Class.ClassName;
         }
 
         private IEnumerable<ExecutedNode> GetExecutedNodes()
