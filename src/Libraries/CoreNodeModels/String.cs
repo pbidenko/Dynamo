@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     /// <summary>
     /// Base class to represent a single input string node. It supports 
@@ -53,9 +53,9 @@ namespace DSCoreNodesUI
     }
 
     [NodeName("String from Object")]
-    [NodeDescription("StringfromObjectDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("StringfromObjectDescription", typeof(CoreNodeModels.Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromObjectSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("FromObjectSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject")]
     public class FromObject: ToStringNodeBase 
@@ -70,9 +70,9 @@ namespace DSCoreNodesUI
     }
 
     [NodeName("String from Array")]
-    [NodeDescription("StringfromArrayDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("StringfromArrayDescription", typeof(CoreNodeModels.Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromArraySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("FromArraySearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray")]
     public class FromArray : ToStringNodeBase 

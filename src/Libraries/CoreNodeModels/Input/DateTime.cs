@@ -5,7 +5,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     [NodeName("Date Time")]
     [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]

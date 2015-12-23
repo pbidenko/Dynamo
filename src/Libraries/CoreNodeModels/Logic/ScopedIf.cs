@@ -2,7 +2,7 @@
 using System.Linq;
 
 using Dynamo.Engine.CodeGeneration;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore;
@@ -11,7 +11,7 @@ using ProtoCore.AST.AssociativeAST;
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
 using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
-namespace DSCoreNodesUI.Logic
+namespace CoreNodeModels.Logic
 {
     [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
      NodeDescription("ScopeIfDescription", typeof(Properties.Resources)), IsDesignScriptCompatible]

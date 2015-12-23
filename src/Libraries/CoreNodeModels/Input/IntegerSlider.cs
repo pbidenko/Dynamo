@@ -9,12 +9,12 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("IntegerSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("IntegerSliderSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("IntegerSliderNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("IntegerSliderSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : SliderBase<int>

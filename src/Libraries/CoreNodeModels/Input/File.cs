@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : String
@@ -41,8 +41,8 @@ namespace DSCoreNodesUI.Input
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("FilenameNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("FilePathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("FilenameNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("FilePathSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Filename")]
@@ -56,8 +56,8 @@ namespace DSCoreNodesUI.Input
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DirectoryNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("DirectoryPathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("DirectoryNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("DirectoryPathSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Directory")]
@@ -181,8 +181,8 @@ namespace DSCoreNodesUI.Input
 
     [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("FileObjectNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("FilePathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("FileObjectNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("FilePathSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.FileObject")]
@@ -237,8 +237,8 @@ namespace DSCoreNodesUI.Input
 
     [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("DirectoryObjectNodeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("DirectoryPathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("DirectoryObjectNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("DirectoryPathSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.DirectoryObject")]

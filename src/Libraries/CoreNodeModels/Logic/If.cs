@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodesUI.Logic
+namespace CoreNodeModels.Logic
 {
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("IfDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("IfDescription", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {

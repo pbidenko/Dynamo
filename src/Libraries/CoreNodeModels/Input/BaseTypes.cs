@@ -14,11 +14,11 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("StringInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("StringInputNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput")]
     public class StringInput : String
@@ -110,7 +110,7 @@ namespace DSCoreNodesUI.Input
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DoubleInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("DoubleInputNodeDescription", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput")]
     public class DoubleInput : NodeModel

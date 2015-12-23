@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("RangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("RangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("RangeDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("RangeSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Range : NodeModel
     {
@@ -82,8 +82,8 @@ namespace DSCoreNodesUI
 
     [NodeName("Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("SequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("SequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("SequenceDescription", typeof(CoreNodeModels.Properties.Resources))]
+    [NodeSearchTags("SequenceSearchTags", typeof(CoreNodeModels.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Sequence : NodeModel
     {
