@@ -36,6 +36,7 @@ namespace Dynamo.Publish
         private MenuItem manageCustomizersMenuItem;
         private Separator separator = new Separator();
         private IWorkspaceStorageClient reachClient;
+        private bool cachedSession = false;
  
         #region IViewExtension implementation
 
@@ -113,6 +114,11 @@ namespace Dynamo.Publish
 
         private MenuItem GenerateMenuItem()
         {
+            startupParams.AuthProvider.LoginStateChanged += (loginState) =>
+            {
+                if (loginState == LoginState.LoggedOut)
+                    cachedSession = false;
+            };
             var item = new MenuItem();
             item.Header = Resources.DynamoViewMenuItemPublishTitle;
 
@@ -159,12 +165,20 @@ namespace Dynamo.Publish
 
             if (termsOfUseAccepted)
             {
-                // Terms of use accepted, proceed to publish.
-                MessageBoxResult decision =
-                MessageBox.Show(Resources.TermsConfirmationContent,
-                    Resources.TermsConfirmation,
-                    MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (decision == MessageBoxResult.Yes)
+                if (!cachedSession)
+                {
+                    // Terms of use accepted, proceed to publish.
+                    MessageBoxResult decision =
+                        MessageBox.Show(Resources.TermsConfirmationContent,
+                            Resources.TermsConfirmation,
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (decision == MessageBoxResult.Yes)
+                    {
+                        cachedSession = true;
+                        PublishCurrentWorkspace();
+                    }
+                }
+                else
                 {
                     PublishCurrentWorkspace();
                 }
@@ -222,6 +236,7 @@ namespace Dynamo.Publish
 
             if (success)
             {
+                cachedSession = true;
                 PublishCurrentWorkspace();
             }
         }
