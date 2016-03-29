@@ -428,7 +428,8 @@ namespace Dynamo.UI.Controls
                     }
                     if (refreshDisplay != null)
                     {
-                        refreshDisplay();
+                        // calculate size of preview only after its content is rendered
+                        Dispatcher.BeginInvoke(new Action(refreshDisplay), DispatcherPriority.Loaded);
                     }
                 }
             );
