@@ -18,7 +18,14 @@ namespace Dynamo.Graph.Presets
 
         # region properties
 
+        /// <summary>
+        /// Name of preset
+        /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Description of preset
+        /// </summary>
         public string Description { get; private set; }
        
         /// <summary>
@@ -31,10 +38,24 @@ namespace Dynamo.Graph.Presets
         /// </summary>
         public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; }}
 
-       
+        /// <summary>
+        /// XML attribute name for guid 
+        /// </summary>
         public const string GuidAttributeName = "guid";
+
+        /// <summary>
+        /// XML attribute name for preset's name 
+        /// </summary>
         public const string NameAttributeName = "Name";
+
+        /// <summary>
+        /// XML attribute name for preset's description 
+        /// </summary>
         public const string DescriptionAttributeName = "Description";
+
+        /// <summary>
+        /// XML attribute name for preset's description 
+        /// </summary>
         public const string NicknameAttributeName = "nickname";
 
         #endregion
